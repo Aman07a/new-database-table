@@ -16,21 +16,39 @@ class PetAdoptionTablePlugin
 {
     function __construct()
     {
+        global $wpdb;
+        $this->charset = $wpdb->get_charset_collate();
+        $this->tablename = $wpdb->prefix . "pets";
+
         add_action("activate_new-database-table/new-database-table.php", [
             $this,
             "onActivate",
         ]);
-        add_action("admin_head", [$this, "onAdminRefresh"]);
+        //add_action("admin_head", array($this, "populateFast"));
         add_action("wp_enqueue_scripts", [$this, "loadAssets"]);
         add_filter("template_include", [$this, "loadTemplate"], 99);
     }
 
     function onActivate()
     {
+        require_once ABSPATH . "wp-admin/includes/upgrade.php";
+        dbDelta("CREATE TABLE $this->tablename (	
+      id bigint(20) unsigned NOT NULL AUTO_INCREMENT,	
+      birthyear smallint(5) NOT NULL DEFAULT 0,	
+      petweight smallint(5) NOT NULL DEFAULT 0,	
+      favfood varchar(60) NOT NULL DEFAULT '',	
+      favhobby varchar(60) NOT NULL DEFAULT '',	
+      favcolor varchar(60) NOT NULL DEFAULT '',	
+      petname varchar(60) NOT NULL DEFAULT '',	
+      species varchar(60) NOT NULL DEFAULT '',	
+      PRIMARY KEY  (id)	
+    ) $this->charset;");
     }
 
     function onAdminRefresh()
     {
+        global $wpdb;
+        $wpdb->insert($this->tablename, generatePet());
     }
 
     function loadAssets()
@@ -38,7 +56,7 @@ class PetAdoptionTablePlugin
         if (is_page("pet-adoption")) {
             wp_enqueue_style(
                 "petadoptioncss",
-                plugin_dir_url(__FILE__) . "./pet-adoption.css"
+                plugin_dir_url(__FILE__) . "pet-adoption.css"
             );
         }
     }
