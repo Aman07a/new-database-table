@@ -28,8 +28,23 @@ class PetAdoptionTablePlugin
       "onActivate",
     ]);
     // add_action("admin_head", [$this, "populateFast"]);
+    add_action("admin_post_createpet", [$this, "createPet"]);
+    add_action("admin_post_nopriv_createpet", [$this, "createPet"]);
     add_action("wp_enqueue_scripts", [$this, "loadAssets"]);
     add_filter("template_include", [$this, "loadTemplate"], 99);
+  }
+
+  function createPet()
+  {
+    if (current_user_can("administrator")) {
+      $pet = generatePet();
+      $pet["petname"] = sanitize_text_field($_POST["incomingpetname"]);
+      global $wpdb;
+      $wpdb->insert($this->tablename, $pet);
+      wp_redirect(site_url("/pet-adoption"));
+    } else {
+      wp_redirect(site_url());
+    }
   }
 
   function onActivate()
