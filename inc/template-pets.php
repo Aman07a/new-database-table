@@ -1,5 +1,8 @@
 <?php
 
+require_once plugin_dir_path(__FILE__) . "GetPets.php";
+$getPets = new GetPets();
+
 get_header(); ?>
 
 <div class="page-banner">
@@ -39,7 +42,7 @@ get_header(); ?>
       <th>Favorite Color</th>
       <th>Favorite Food</th>
     </tr>
-    <?php foreach ($pets as $pet) { ?>
+    <?php foreach ($getPets->getPets() as $pet) { ?>
       <tr>
         <td><?php echo $pet->petname; ?></td>
         <td><?php echo $pet->species; ?></td>
