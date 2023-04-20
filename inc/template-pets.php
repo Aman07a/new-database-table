@@ -21,8 +21,9 @@ get_header(); ?>
   <p>
     This page took
     <strong><?php echo timer_stop(); ?></strong>
-    seconds to prepare. Found <strong>x</strong>
-    results (showing the first x).
+    seconds to prepare. Found
+    <strong><?php echo $getPets->count; ?></strong>
+    results (showing the first <?php echo count($getPets->pets) ?>).
   </p>
 
   <?php
@@ -42,7 +43,7 @@ get_header(); ?>
       <th>Favorite Color</th>
       <th>Favorite Food</th>
     </tr>
-    <?php foreach ($getPets->getPets() as $pet) { ?>
+    <?php foreach ($getPets->pets as $pet) { ?>
       <tr>
         <td><?php echo $pet->petname; ?></td>
         <td><?php echo $pet->species; ?></td>
